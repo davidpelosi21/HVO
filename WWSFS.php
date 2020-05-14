@@ -63,58 +63,43 @@
     <div class="col-sm-8 col-offset-1 main-layout">
 
 <!-- INSERIRE QUI IL CODICE-->
-
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <center><h3 style="color:rgb(60, 128, 214);"><b>NM Station Set</b></h3></center
 >
 <?php
-
-$myfile2 = fopen("SET/E.txt", "w") or die("Unable to open file!");    
-$line2 = $_GET['energy'];
-fwrite($myfile2, $line2);
-
-
-$myfile = fopen("SET/NM_Set1.txt", "w") or die("Unable to open file!"); 
+$myfile = fopen("SFS/Set.txt", "w") or die("Unable to open file!"); 
 $name = $_GET['station'];
 foreach ($name as $station){ 
  fwrite($myfile, $station);
  fwrite($myfile, "\n");
 }
   
-
-exec("sh run.sh");
-echo("<h4>Operation completed</h4>");
-echo "Energy:\n";
-echo $line2;
-echo "\n\nGeV\n\n\n"; echo "<br>";
-
-echo "NM Stations: ";
+echo "Data selected: ";
 $name = $_GET['station'];
 foreach ($name as $station){
 echo $station;
 echo "\n\n";
 }
-echo "<br>";
-echo("<button onclick=\"location.href='/Neutron.html'\">See Result</button>");
 
-//echo("<button onclick=\"location.href='/Neutron.html'\">See Result</button>");
-//echo(<button><type="button"><a  href="/Neutron.html">See Result</a></button>);
-//exec("sh run2.sh");
-//echo $message;
-//echo "\n OPERATION COMPLETED";
-
-$myfile3 = fopen("Neutron/E.txt", "w") or die("Unable to open file!");
+$myfile3 = fopen("SFS/E.txt", "w") or die("Unable to open file!");
 $line3 = $_GET["birthday"];
 $line4 = $_GET["birthday2"];
 fwrite($myfile3, $line3);
-
 fwrite($myfile3, "\r\n");
 fwrite($myfile3, $line4);
-fclose($myfile2);
-exec("sh Neutron/run.sh");
-header("Location: http://10.2.201.68/Neutron.html");
+
+fclose($myfile);
+fclose($myfile3);
+exec("sh SFS/runSFS.sh");
+
+exec("sh SFS/runEXE.sh");
+
+header("Location: http://10.2.201.68/SFS.html");
 exit();
+
+echo "<br>";
+echo("<button onclick=\"location.href='/SFS.html'\">See Result</button>");
+
 ?>
 
 <!--
