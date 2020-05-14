@@ -21,8 +21,16 @@ using namespace std;
 //------------------------------------------------------------------------------
 int main()
 {
+
+
+  fstream f;
+  f.open("/var/www/html/SFS/E.txt",ios::in);
+  double xmin,xmax;
+  while (!f.eof()) {
+    f>>xmin>>xmax>>ws;
+  }
  
-  TCanvas *c1 = new TCanvas("TOTAL Graph","titolo Canvas");
+  TCanvas *c1 = new TCanvas("SPFS Graph","titolo Canvas");
   c1->SetFillColor(0);
     
     
@@ -113,43 +121,78 @@ int main()
     cout<<"Loading...."<<endl;
     //Dichiaro Canvas
     c1->cd();
+
+    vector<char> variable;
+    ifstream set;
+    string path ="/var/www/html/SFS/Set.txt";
+    cout<<path<<endl;
+
+    set.open(path);
+    char sx;
+    while (!set.eof()) {
+      set>>sx>>ws;
+      variable.push_back(sx);
+    }
+
+
+    //  
     TMultiGraph *mg = new TMultiGraph();
-    mg->Add(h);
-    mg->Add(g);
-    mg->Add(k);
-    mg->Add(hf);
-    mg->Add(gf);
-    mg->Add(kf);
+    TLegend *legend = new TLegend(.75,.75,.89,.89);
+
+    for (int i=0; i<variable.size(); i++) {
+    switch (variable[i]) {
+    case '1':
+      mg->Add(k);
+      legend->AddEntry(k,"N ","l");
+      break;
+    case '2':
+      mg->Add(g);
+      legend->AddEntry(g,"S","l");
+      break;
+    case '3':
+      mg->Add(kf);
+      legend->AddEntry(kf,"N 20 nhz ","l");
+      break;
+    case '4':
+      mg->Add(gf);
+      legend->AddEntry(gf,"S 20 nhz ","l");
+      break;
+    case '5':
+      mg->Add(h);
+      legend->AddEntry(h,"Avg ","l");
+      break;
+    case '6':
+      mg->Add(hf);
+      legend->AddEntry(hf,"Avg 20 nhz  ","l");
+      break;
+    }
+   }
+
     mg->SetTitle("Solar Polar Field Strength");
     mg->Draw("apl");
+    mg->GetXaxis()->SetRangeUser(xmin,xmax);
     mg->GetXaxis()->CenterTitle();
     mg->GetYaxis()->CenterTitle();
     mg->GetXaxis()->SetTitle("year");
-    mg->GetYaxis()->SetTitle("Solar Field Strength");
-    mg->SetName("Total Graph");
+    mg->GetYaxis()->SetTitle("Solar Polar Field Strength (#mu T)");
+    mg->SetName("SPFS Graph");
     
-    TLegend *legend = new TLegend(.75,.75,.89,.89);
-    legend->SetHeader("","C"); // option "C" allows to center the header
-    legend->AddEntry(k,"Solar Field Strength N ","l");
-    legend->AddEntry(g,"Solar Field Strength S","l");
-    legend->AddEntry(h,"Solar Field Strength Avg ","l");
-    legend->AddEntry(kf,"Solar Field Strength N 20 nhz ","l");
-    legend->AddEntry(gf,"Solar Field Strength S 20 nhz ","l");
-    legend->AddEntry(hf,"Solar Field Strength Avg 20 nhz  ","l");
+  
+    legend->SetHeader("","C"); // option "C" allows to center the heade
     legend->SetX1NDC(0.01);
     legend->SetX2NDC(0.9);
     legend->Draw();
       
     //creo file di tipo root dove salvo la canvas contenente il grafico creato
  
-    TFile ff("/var/www/html/SFS/ROOT/SFS.root" , "recreate");
+    TFile ff("/var/www/html/SFS/ROOT/SPFS.root" , "recreate");
     ff.cd();
-    k->Write();
-    h->Write();
-    g->Write();
-    kf->Write();
-    hf->Write();
-    gf->Write();
+    // k->Write();
+    // h->Write();
+    // g->Write();
+    // kf->Write();
+    //hf->Write();
+    // gf->Write();
     c1->Write();
     ff.Close();
     return 0;
